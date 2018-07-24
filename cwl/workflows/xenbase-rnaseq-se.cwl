@@ -270,51 +270,7 @@ steps:
       rsem_annotation_file: get_annotation_file/selected_file
     out: [biowardrobe_isoforms_file]
 
-$namespaces:
-  s: http://schema.org/
-
-$schemas:
-- http://schema.org/docs/schema_org_rdfa.html
-
-s:name: "xenbase-rnaseq-se"
-s:downloadUrl: https://raw.githubusercontent.com/Barski-lab/workflows/master/workflows/xenbase-rnaseq-se.cwl
-s:codeRepository: https://github.com/Barski-lab/workflows
-s:license: http://www.apache.org/licenses/LICENSE-2.0
-
-s:isPartOf:
-  class: s:CreativeWork
-  s:name: Common Workflow Language
-  s:url: http://commonwl.org/
-
-s:creator:
-- class: s:Organization
-  s:legalName: "Cincinnati Children's Hospital Medical Center"
-  s:location:
-  - class: s:PostalAddress
-    s:addressCountry: "USA"
-    s:addressLocality: "Cincinnati"
-    s:addressRegion: "OH"
-    s:postalCode: "45229"
-    s:streetAddress: "3333 Burnet Ave"
-    s:telephone: "+1(513)636-4200"
-  s:logo: "https://www.cincinnatichildrens.org/-/media/cincinnati%20childrens/global%20shared/childrens-logo-new.png"
-  s:department:
-  - class: s:Organization
-    s:legalName: "Allergy and Immunology"
-    s:department:
-    - class: s:Organization
-      s:legalName: "Barski Research Lab"
-      s:member:
-      - class: s:Person
-        s:name: Michael Kotliar
-        s:email: mailto:misha.kotliar@gmail.com
-        s:sameAs:
-        - id: http://orcid.org/0000-0002-6486-3898
-
 doc: |
-  XenBase workflow for analysing RNA-Seq single-end data
-
-s:about: |
   1. Convert input SRA file into pair of upsrtream and downstream FASTQ files (run fastq-dump)
   2. Analyze quality of FASTQ files (run fastqc with each of the FASTQ files)
   3. If any of the following fields in fastqc generated report is marked as failed for at least one of input FASTQ files:

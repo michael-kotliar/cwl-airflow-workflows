@@ -362,52 +362,7 @@ steps:
         mapped_reads: get_stat/mapped_reads
       out: [result_file, log_file]
 
-
-$namespaces:
-  s: http://schema.org/
-
-$schemas:
-- http://schema.org/docs/schema_org_rdfa.html
-
-s:name: "chipseq-se"
-s:downloadUrl: https://raw.githubusercontent.com/SciDAP/workflows/master/workflows/chipseq-se.cwl
-s:codeRepository: https://github.com/SciDAP/workflows
-s:license: http://www.apache.org/licenses/LICENSE-2.0
-
-s:isPartOf:
-  class: s:CreativeWork
-  s:name: Common Workflow Language
-  s:url: http://commonwl.org/
-
-s:creator:
-- class: s:Organization
-  s:legalName: "Cincinnati Children's Hospital Medical Center"
-  s:location:
-  - class: s:PostalAddress
-    s:addressCountry: "USA"
-    s:addressLocality: "Cincinnati"
-    s:addressRegion: "OH"
-    s:postalCode: "45229"
-    s:streetAddress: "3333 Burnet Ave"
-    s:telephone: "+1(513)636-4200"
-  s:logo: "https://www.cincinnatichildrens.org/-/media/cincinnati%20childrens/global%20shared/childrens-logo-new.png"
-  s:department:
-  - class: s:Organization
-    s:legalName: "Allergy and Immunology"
-    s:department:
-    - class: s:Organization
-      s:legalName: "Barski Research Lab"
-      s:member:
-      - class: s:Person
-        s:name: Michael Kotliar
-        s:email: mailto:michael.kotliar@cchmc.org
-        s:sameAs:
-        - id: http://orcid.org/0000-0002-6486-3898
-
-doc: >
-  Runs ChIP-Seq BioWardrobe basic analysis with single-end data file.
-
-s:about: |
+doc: |
   This is the original [BioWardrobe's](https://biowardrobe.com) [PubMed ID:26248465](https://www.ncbi.nlm.nih.gov/pubmed/26248465)
   **ChIP-Seq** basic analysis for a **single-read** experiment.
   A [FASTQ](http://maq.sourceforge.net/fastq.shtml) input file has to be provided.

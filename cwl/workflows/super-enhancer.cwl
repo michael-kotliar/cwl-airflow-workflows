@@ -164,51 +164,6 @@ steps:
         valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_super_enhancer.tsv")
     out: [output_file]
 
-
-$namespaces:
-  s: http://schema.org/
-
-$schemas:
-- http://schema.org/docs/schema_org_rdfa.html
-
-s:name: "super-enhancer"
-s:downloadUrl: https://raw.githubusercontent.com/Barski-lab/workflows/master/workflows/super-enhancer.cwl
-s:codeRepository: https://github.com/Barski-lab/workflows
-s:license: http://www.apache.org/licenses/LICENSE-2.0
-
-s:isPartOf:
-  class: s:CreativeWork
-  s:name: Common Workflow Language
-  s:url: http://commonwl.org/
-
-s:creator:
-- class: s:Organization
-  s:legalName: "Cincinnati Children's Hospital Medical Center"
-  s:location:
-  - class: s:PostalAddress
-    s:addressCountry: "USA"
-    s:addressLocality: "Cincinnati"
-    s:addressRegion: "OH"
-    s:postalCode: "45229"
-    s:streetAddress: "3333 Burnet Ave"
-    s:telephone: "+1(513)636-4200"
-  s:logo: "https://www.cincinnatichildrens.org/-/media/cincinnati%20childrens/global%20shared/childrens-logo-new.png"
-  s:department:
-  - class: s:Organization
-    s:legalName: "Allergy and Immunology"
-    s:department:
-    - class: s:Organization
-      s:legalName: "Barski Research Lab"
-      s:member:
-      - class: s:Person
-        s:name: Michael Kotliar
-        s:email: mailto:misha.kotliar@gmail.com
-        s:sameAs:
-        - id: http://orcid.org/0000-0002-6486-3898
-
 doc: |
   Both `islands_file` and `islands_control_file` should be produced by the same cwl tool (iaintersect.cwl or
   macs2-callpeak-biowardrobe-only.cwl)
-
-s:about: |
-  Workflow to run Super Enhancer Analysis
