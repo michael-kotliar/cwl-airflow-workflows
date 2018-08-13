@@ -163,7 +163,3 @@ steps:
         source: bambai_pair
         valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_super_enhancer.tsv")
     out: [output_file]
-
-doc: |
-  Both `islands_file` and `islands_control_file` should be produced by the same cwl tool (iaintersect.cwl or
-  macs2-callpeak-biowardrobe-only.cwl)

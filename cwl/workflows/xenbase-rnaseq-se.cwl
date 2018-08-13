@@ -269,18 +269,3 @@ steps:
       rsem_isoforms_file: rename_rsem_isoforms_file/target_file
       rsem_annotation_file: get_annotation_file/selected_file
     out: [biowardrobe_isoforms_file]
-
-doc: |
-  1. Convert input SRA file into pair of upsrtream and downstream FASTQ files (run fastq-dump)
-  2. Analyze quality of FASTQ files (run fastqc with each of the FASTQ files)
-  3. If any of the following fields in fastqc generated report is marked as failed for at least one of input FASTQ files:
-        "Per base sequence quality",
-        "Per sequence quality scores",
-        "Overrepresented sequences",
-        "Adapter Content",
-    - trim adapters (run trimmomatic)
-  4. Align original or trimmed FASTQ files to reference genome, calculate genes and isoforms expression (run RSEM)
-  5. Count mapped reads number in sorted BAM file (run bamtools stats)
-  6. Generate genome coverage BED file (run bedtools genomecov)
-  7. Sort genearted BED file (run sort)
-  8. Generate genome coverage bigWig file from BED file (run bedGraphToBigWig)
