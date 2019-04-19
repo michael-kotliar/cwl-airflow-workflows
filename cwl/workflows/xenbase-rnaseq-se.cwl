@@ -118,30 +118,50 @@ outputs:
 steps:
 
   extract_fastq:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/extract-fastq.cwl
     in:
       compressed_file: fastq_file
     out: [fastq_file]
 
   fastx_quality_stats:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/fastx-quality-stats.cwl
     in:
       input_file: extract_fastq/fastq_file
     out: [statistics_file]
 
   fastqc_stats:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/fastqc.cwl
     in:
       fastq_file: extract_fastq/fastq_file
     out: [summary_file]
 
   fastqc_results_trigger:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/fastqc-results-trigger.cwl
     in:
       summary_file: fastqc_stats/summary_file
     out: [trigger]
 
   trim_adapters:
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
     run: ../tools/trimmomatic.cwl
     in:
       fastq_file_upstream: extract_fastq/fastq_file
@@ -155,6 +175,10 @@ steps:
     out: [upstream_trimmed_file]
 
   rsem_calculate_expression:
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
     run: ../tools/rsem-calculate-expression.cwl
     in:
       upstream_read_file: trim_adapters/upstream_trimmed_file
@@ -176,6 +200,10 @@ steps:
       - multimapped_reads_number
 
   rename_rsem_bambai_pair:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/rename.cwl
     in:
       source_file: rsem_calculate_expression/genome_sorted_bam_bai_pair
@@ -185,6 +213,10 @@ steps:
     out: [target_file]
 
   rename_rsem_isoforms_file:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/rename.cwl
     in:
       source_file: rsem_calculate_expression/isoform_results_file
@@ -194,6 +226,10 @@ steps:
     out: [target_file]
 
   rename_rsem_genes_file:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/rename.cwl
     in:
       source_file: rsem_calculate_expression/gene_results_file
@@ -203,6 +239,10 @@ steps:
     out: [target_file]
 
   get_chr_length_file:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/get-file-by-name.cwl
     in:
       input_files: rsem_indices_folder
@@ -211,6 +251,10 @@ steps:
     out: [selected_file]
 
   bam_to_bigwig:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../subworkflows/bam-bedgraph-bigwig.cwl
     in:
       bam_file: rename_rsem_bambai_pair/target_file
@@ -219,6 +263,10 @@ steps:
     out: [bigwig_file]
 
   ribo_bowtie_aligner:
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
     run: ../tools/bowtie-alignreads.cwl
     in:
       upstream_filelist: trim_adapters/upstream_trimmed_file
@@ -236,6 +284,10 @@ steps:
       - log_file
 
   get_stat:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/custom-bash.cwl
     in:
       input_file: rsem_calculate_expression/isoform_results_file
@@ -256,6 +308,10 @@ steps:
     out: [output_file]
 
   get_annotation_file:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/get-file-by-name.cwl
     in:
       input_files: rsem_indices_folder
@@ -264,6 +320,10 @@ steps:
     out: [selected_file]
 
   make_biowardrobe_isoforms:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/python-make-biowardrobe-isoforms.cwl
     in:
       rsem_isoforms_file: rename_rsem_isoforms_file/target_file

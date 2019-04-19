@@ -58,6 +58,7 @@ inputs:
     label: "Promoter distance"
     doc: "Promoter distance for gene names assignment"
 
+
 outputs:
 
   png_file:
@@ -85,6 +86,10 @@ outputs:
 steps:
 
   make_gff:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/makegff.cwl
     in:
       islands_file: islands_file
@@ -92,6 +97,10 @@ steps:
     out: [gff_file]
 
   run_rose:
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
     run: ../tools/rose.cwl
     in:
       binding_sites_file: make_gff/gff_file
@@ -104,6 +113,10 @@ steps:
     - gateway_super_enhancers_bed
 
   rename_png:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/rename.cwl
     in:
       source_file: run_rose/plot_points_pic
@@ -113,6 +126,10 @@ steps:
     out: [target_file]
 
   sort_bed:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/linux-sort.cwl
     in:
       unsorted_file: run_rose/gateway_super_enhancers_bed
@@ -121,6 +138,10 @@ steps:
     out: [sorted_file]
 
   bed_to_bigbed:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/ucsc-bedtobigbed.cwl
     in:
       input_bed: sort_bed/sorted_file
@@ -133,6 +154,10 @@ steps:
     out: [bigbed_file]
 
   bed_to_macs:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/custom-bash.cwl
     in:
       input_file: sort_bed/sorted_file
@@ -144,6 +169,10 @@ steps:
     out: [output_file]
 
   assign_genes:
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
     run: ../tools/iaintersect.cwl
     in:
       input_filename: bed_to_macs/output_file
@@ -152,6 +181,10 @@ steps:
     out: [result_file]
 
   add_island_names:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/custom-bash.cwl
     in:
       input_file: [assign_genes/result_file, sort_bed/sorted_file]

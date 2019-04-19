@@ -1,6 +1,7 @@
 cwlVersion: v1.0
 class: Workflow
 
+
 requirements:
   - class: SubworkflowFeatureRequirement
   - class: ScatterFeatureRequirement
@@ -86,6 +87,7 @@ inputs:
     default: 2
     doc: "Number of threads for those steps that support multithreading"
     label: "Number of threads"
+
 
 outputs:
 
@@ -215,21 +217,34 @@ outputs:
     doc: "fragment, calculated fragment, islands count from MACS2 results"
     outputSource: macs2_callpeak/macs2_stat_file
 
+
 steps:
 
   extract_fastq:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024
     run: ../tools/extract-fastq.cwl
     in:
       compressed_file: fastq_file
     out: [fastq_file]
 
   fastx_quality_stats:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024
     run: ../tools/fastx-quality-stats.cwl
     in:
       input_file: extract_fastq/fastq_file
     out: [statistics_file]
 
   bowtie_aligner:
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048
     run: ../tools/bowtie-alignreads.cwl
     in:
       upstream_filelist: extract_fastq/fastq_file
@@ -252,6 +267,10 @@ steps:
     out: [sam_file, log_file]
 
   samtools_sort_index:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024
     run: ../tools/samtools-sort-index.cwl
     in:
       sort_input: bowtie_aligner/sam_file
@@ -259,6 +278,10 @@ steps:
     out: [bam_bai_pair]
 
   samtools_rmdup:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/samtools-rmdup.cwl
     in:
       trigger: remove_duplicates
@@ -268,6 +291,10 @@ steps:
     out: [rmdup_output, rmdup_log]
 
   samtools_sort_index_after_rmdup:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024  
     run: ../tools/samtools-sort-index.cwl
     in:
       trigger: remove_duplicates
@@ -276,6 +303,10 @@ steps:
     out: [bam_bai_pair]
 
   macs2_callpeak:
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
     run: ../tools/macs2-callpeak-biowardrobe-only.cwl
     in:
       treatment_file: samtools_sort_index_after_rmdup/bam_bai_pair
@@ -317,6 +348,10 @@ steps:
       - macs2_fragments_calculated
 
   bam_to_bigwig:
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024
     run: ../subworkflows/bam-bedgraph-bigwig.cwl
     in:
       bam_file: samtools_sort_index_after_rmdup/bam_bai_pair
@@ -326,38 +361,50 @@ steps:
     out: [bigwig_file]
 
   get_stat:
-      run: ../tools/python-get-stat-chipseq.cwl
-      in:
-        bowtie_log: bowtie_aligner/log_file
-        rmdup_log: samtools_rmdup/rmdup_log
-      out:
-        - output_file
-        - mapped_reads
+    hints:
+      ResourceRequirement:
+        coresMin: 1
+        ramMin: 1024
+    run: ../tools/python-get-stat-chipseq.cwl
+    in:
+      bowtie_log: bowtie_aligner/log_file
+      rmdup_log: samtools_rmdup/rmdup_log
+    out:
+      - output_file
+      - mapped_reads
 
   island_intersect:
-      run: ../tools/iaintersect.cwl
-      in:
-        input_filename: macs2_callpeak/peak_xls_file
-        annotation_filename: annotation_file
-        promoter_bp:
-          default: 1000
-      out: [result_file, log_file]
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
+    run: ../tools/iaintersect.cwl
+    in:
+      input_filename: macs2_callpeak/peak_xls_file
+      annotation_filename: annotation_file
+      promoter_bp:
+        default: 1000
+    out: [result_file, log_file]
 
   average_tag_density:
-      run: ../tools/atdp.cwl
-      in:
-        input_file: samtools_sort_index_after_rmdup/bam_bai_pair
-        annotation_filename: annotation_file
-        fragmentsize_bp: macs2_callpeak/macs2_fragments_calculated
-        avd_window_bp:
-          default: 5000
-        avd_smooth_bp:
-          default: 50
-        ignore_chr:
-          default: chrM
-        double_chr:
-          default: "chrX chrY"
-        avd_heat_window_bp:
-          default: 200
-        mapped_reads: get_stat/mapped_reads
-      out: [result_file, log_file]
+    hints:
+      ResourceRequirement:
+        coresMin: 2
+        ramMin: 2048  
+    run: ../tools/atdp.cwl
+    in:
+      input_file: samtools_sort_index_after_rmdup/bam_bai_pair
+      annotation_filename: annotation_file
+      fragmentsize_bp: macs2_callpeak/macs2_fragments_calculated
+      avd_window_bp:
+        default: 5000
+      avd_smooth_bp:
+        default: 50
+      ignore_chr:
+        default: chrM
+      double_chr:
+        default: "chrX chrY"
+      avd_heat_window_bp:
+        default: 200
+      mapped_reads: get_stat/mapped_reads
+    out: [result_file, log_file]
